@@ -1,0 +1,5 @@
+step,cycle_time_s,changeover_s,uptime_pct,inventory_before,source
+Check-in,180,,98,6,"observed, 15 visits, 2026-09-14"
+Rooming/vitals,300,,95,4,"observed, 12 visits, 2026-09-14"
+Provider visit,,,90,9,
+Checkout,150,,100,3,"from scheduling system"

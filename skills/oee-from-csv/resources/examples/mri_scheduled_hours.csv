@@ -1,0 +1,6 @@
+date,shift,line,planned_min,ideal_cycle_time_min,total_count,good_count,reject_count,downtime_reason,downtime_min
+2026-09-10,day,MRI-2,600,25,18,17,1,,
+2026-09-10,day,MRI-2,,,,,,Coil fault - reboot,25
+2026-09-10,day,MRI-2,,,,,,Patient no-show,30
+2026-09-10,day,MRI-2,,,,,,Contrast prep delay,15
+2026-09-10,day,MRI-2,,,,,,sw,10
