@@ -7,9 +7,9 @@ REQUIRED = {
     "planned_min": ["planned_min", "planned_time", "planned_production_time", "planned time (min)", "scheduled_min", "scheduled hours"],
     "ideal_cycle_time": ["ideal_cycle_time", "ideal_cycle_time_min", "ideal cycle time", "rated_speed", "cycle_time"],
     "total_count": ["total_count", "total", "units", "count", "produced", "total units"],
-    "good_count": ["good_count", "good", "good units", "first_pass"],
 }
 OPTIONAL = {
+    "good_count": ["good_count", "good", "good units", "first_pass"],
     "reject_count": ["reject_count", "rejects", "scrap", "reject"],
     "downtime_min": ["downtime_min", "downtime", "duration_min", "duration", "downtime (min)"],
     "downtime_reason": ["downtime_reason", "reason", "reason_code", "cause", "downtime reason"],
@@ -93,9 +93,9 @@ def main():
         for k, src in (("planned", "planned_min"), ("ideal", "ideal_cycle_time"), ("total", "total_count"), ("good", "good_count"), ("reject", "reject_count")):
             v = num(g(row, src))
             if grp[k] is None and v is not None: grp[k] = v
-        if g(row, "total_count") and not g(row, "good_count"): grp["blank_quality"] = True
+        if "good_count" in col and g(row, "total_count") and not g(row, "good_count"): grp["blank_quality"] = True
         d = num(g(row, "downtime_min"))
-        if d:
+        if d is not None and d != 0:
             planned_flag = g(row, "planned_downtime").lower() in ("1", "true", "yes", "y", "planned")
             if planned_flag: grp["planned_down"] += d
             else:
@@ -120,11 +120,18 @@ def main():
         totals["ideal_x_count"] += ideal * grp["total"]
         if good is not None: totals["good"] += good
         if grp["blank_quality"]: flags.append(f"{label}: good_count blank — excluded from Quality, not treated as 100% good.")
+        if A > 1 or A < 0: flags.append(f"{label}: Availability {pct(A)} is outside 0–100% — downtime is negative or exceeds planned time. Check the export; this is not a usable result.")
+        if any(d < 0 for _, d in grp["events"]): flags.append(f"{label}: a downtime row is negative — check the export.")
         if P > 1: flags.append(f"{label}: Performance {pct(P)} is over 100% — ideal cycle time is probably an average, not best-demonstrated, or counts include units made outside run time. Not a usable result.")
         for reason, d in grp["events"]:
             cat = classify(reason); losses[cat] += d
             if cat == "Unmapped": unmapped_text[reason or "(blank)"] += d
 
+    if not per:
+        print("\n**No usable rows.** The header was recognized but no row carried planned_min, ideal_cycle_time and total_count together — nothing to compute.")
+        sys.exit(2)
+    if "good_count" not in col and "reject_count" not in col:
+        print("\nNo good_count or reject_count column — Quality cannot be computed and is omitted below; this is A × P only, not OEE.")
     A = totals["run"] / totals["planned"] if totals["planned"] else 0
     P = totals["ideal_x_count"] / totals["run"] if totals["run"] else 0
     Q = totals["good"] / totals["total"] if totals["total"] and totals["good"] else None

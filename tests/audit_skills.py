@@ -5,7 +5,7 @@ import re, sys, pathlib, json
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SKILLS = sorted(p for p in (ROOT / "skills").iterdir() if (p / "SKILL.md").exists())
 REQUIRED_SECTIONS = ["when to use", "how this skill works", "quality bar", "closing block"]
-JARGON = re.compile(r"\b(LLM|prompt engineering|token|hallucinat|context window|inference|embedding)\w*", re.I)
+JARGON = re.compile(r"\b(LLM|LLMs|prompt engineering|prompts?|tokens?|hallucinat\w*|context window|language model)\b", re.I)
 
 def frontmatter(text):
     m = re.match(r"^---\n(.*?)\n---\n", text, re.S)
