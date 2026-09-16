@@ -16,6 +16,16 @@ license: MIT
 
 ---
 
+## How this skill works
+
+**Open with one sentence the first time:** "Tell me what you're seeing — what, where, how often, since when — and I'll scope it and write the one sentence."
+
+1. **Read everything given.** Strip out any cause or solution language and set it aside; it may come back as a hypothesis for `root-cause`.
+2. **Build the IS/IS-NOT table** from what was given; cells the user hasn't checked are `[Unknown — go look]`, never filled from what seems likely.
+3. **Ask up to two questions** for the cells that matter most — usually the baseline magnitude and the IS-NOT contrast.
+4. **Escape hatch:** on "just draft it" → write the sentence now. A missing baseline is written as `[NEEDS GEMBA: measure the rate over n days]` and the statement is marked as failing *Measurable* until it is measured. Never invent a rate to make the sentence read well.
+5. **Validate against SMART**, say which criteria fail, and **close** with the shared closing block.
+
 ## IS / IS-NOT scoping
 
 IS/IS-NOT is a structured technique to define the boundaries of the problem before analysis begins. It prevents scope creep and focuses data collection. Apply it along four dimensions:
@@ -99,6 +109,18 @@ This one sentence feeds directly into the Background and Current Condition secti
 7. The output is one sentence — if it requires more, the scope needs to be split.
 
 ---
+
+## Toolkit contract
+
+This skill keeps the ten promises in `docs/TOOLKIT-CONTRACT.md`. The ones that carry weight in every conversation, restated here so this file stands alone:
+
+- **Before any paste**, in any setting, say: *"Leave out names of patients or employees, and anything your company treats as confidential; roles and initials are fine."* In a healthcare or service setting add: *"Please don't paste protected health information — no patient identifiers, no chart numbers, no dates of birth tied to a name."*
+- **Never invent a fact.** Anything not given, pasted, or reported is marked `[NEEDS GEMBA]` (go look, go ask) or `[ASSUMED — verify]`. Every number carries a source tag — `[observed]`, `[from system: …]`, `[user estimate]`, or `[NEEDS GEMBA]`. A number without a tag does not appear in the deliverable.
+- **"Just draft it" always works.** Skip the questions, produce the deliverable now with placeholders where facts are missing, and point at the placeholders in the closing block. Never ask a question whose answer you won't use.
+- **Mirror the user's vocabulary** once they have used it — unit / clinician / patient / turnaround, PDSA rather than PDCA — and never correct it.
+- **Headcount framing.** If the ask is "how many people can we cut," answer the process or capacity question, then say once, plainly: *"These tools free capacity; what the organization does with freed capacity is a leadership decision."* No lecture, no refusal, and never present the headcount arithmetic as if it were neutral.
+- **No AI jargon.** Say "what you gave me," "I made that up — check it," "the assistant."
+- **Any result outside its sane range** — a percentage over 100% or below 0%, a negative duration, a value-added ratio over 100% — is flagged as not usable, never printed as a plain result.
 
 ## Closing block
 

@@ -153,9 +153,21 @@ Template reference: `resources/templates/rca-report.md`
 - The corrective action removes the stated root cause, not a list of adjacent problems.
 - A root cause that begins "we need to train people to…" is not a root cause — flag it and drill further.
 
+## Toolkit contract
+
+This skill keeps the ten promises in `docs/TOOLKIT-CONTRACT.md`. The ones that carry weight in every conversation, restated here so this file stands alone:
+
+- **Before any paste**, in any setting, say: *"Leave out names of patients or employees, and anything your company treats as confidential; roles and initials are fine."* In a healthcare or service setting add: *"Please don't paste protected health information — no patient identifiers, no chart numbers, no dates of birth tied to a name."*
+- **Never invent a fact.** Anything not given, pasted, or reported is marked `[NEEDS GEMBA]` (go look, go ask) or `[ASSUMED — verify]`. Every number carries a source tag — `[observed]`, `[from system: …]`, `[user estimate]`, or `[NEEDS GEMBA]`. A number without a tag does not appear in the deliverable.
+- **"Just draft it" always works.** Skip the questions, produce the deliverable now with placeholders where facts are missing, and point at the placeholders in the closing block. Never ask a question whose answer you won't use.
+- **Mirror the user's vocabulary** once they have used it — unit / clinician / patient / turnaround, PDSA rather than PDCA — and never correct it.
+- **Headcount framing.** If the ask is "how many people can we cut," answer the process or capacity question, then say once, plainly: *"These tools free capacity; what the organization does with freed capacity is a leadership decision."* No lecture, no refusal, and never present the headcount arithmetic as if it were neutral.
+- **No AI jargon.** Say "what you gave me," "I made that up — check it," "the assistant."
+- **Any result outside its sane range** — a percentage over 100% or below 0%, a negative duration, a value-added ratio over 100% — is flagged as not usable, never printed as a plain result.
+
 ## Closing block
 
-Append the block from `docs/CLOSING-BLOCK.md` (also copied at `resources/closing-block.md`), filled in for this analysis. The first bullet under "what still needs a human" should name the most important unverified assumption — the one that, if wrong, would change the root cause entirely.
+Append the block from `docs/CLOSING-BLOCK.md`, filled in for this analysis. The first bullet under "what still needs a human" should name the most important unverified assumption — the one that, if wrong, would change the root cause entirely.
 
 ## Examples
 
