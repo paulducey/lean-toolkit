@@ -4,145 +4,78 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
   :root {
-    --ground: #14171b;
-    --surface: #1d2227;
-    --line: #2d343b;
-    --text: #ece9e1;
-    --muted: #9ba2a9;
-    --accent: #f2c200;
-    --accent-ink: #14171b;
-    --stop: #e0492f;
-    --ok: #62b37a;
+    --ground: #14171b; --surface: #1d2227; --line: #2d343b; --text: #ece9e1; --muted: #9ba2a9;
+    --accent: #f2c200; --accent-ink: #14171b; --stop: #e0492f; --ok: #62b37a;
     --display: "Barlow Condensed", "Arial Narrow", Impact, sans-serif;
     --body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
     --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
     color-scheme: dark;
   }
   html, body { height: 100%; }
-  body {
-    margin: 0;
-    background: var(--ground);
-    color: var(--text);
-    font-family: var(--body);
-    overflow: hidden;
-    -webkit-font-smoothing: antialiased;
-  }
+  body { margin: 0; background: var(--ground); color: var(--text); font-family: var(--body); overflow: hidden; -webkit-font-smoothing: antialiased; }
   * { box-sizing: border-box; }
 
-  /* ---------- stage: fixed 1280x720, scaled to viewport ---------- */
-  #stage-wrap {
-    position: fixed; inset: 0;
-    display: grid; place-items: center;
-    padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px);
-  }
-  #stage {
-    width: 1280px; height: 720px;
-    position: relative;
-    transform-origin: center center;
-    background: var(--ground);
-  }
-  .slide {
-    position: absolute; inset: 0;
-    padding: 64px 88px 72px;
-    display: none;
-    flex-direction: column;
-  }
+  #stage-wrap { position: fixed; inset: 0; display: grid; place-items: center; padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px); }
+  #stage { width: 1280px; height: 720px; position: relative; transform-origin: center center; background: var(--ground); overflow: hidden; }
+  .slide { position: absolute; inset: 0; padding: 64px 88px 72px; display: none; flex-direction: column; }
   .slide.active { display: flex; }
   .slide .notes { display: none; }
 
-  /* ---------- type ---------- */
-  .eyebrow {
-    font-family: var(--mono);
-    font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--accent);
-    margin: 0 0 18px;
-  }
-  h1, h2 {
-    font-family: var(--display);
-    font-weight: 700;
-    line-height: 0.95;
-    letter-spacing: -0.005em;
-    margin: 0;
-    text-wrap: balance;
-  }
+  /* photo slots: hidden automatically if the file isn't there */
+  .bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; filter: saturate(.55) contrast(1.05); }
+  .bg-scrim { position: absolute; inset: 0; z-index: 0; background: linear-gradient(90deg, rgba(20,23,27,.94) 0%, rgba(20,23,27,.86) 45%, rgba(20,23,27,.55) 100%); }
+  .slide > :where(:not(.bg, .bg-scrim, .photo, .photo-scrim, .photo-cap, .tape, .foot)) { position: relative; z-index: 1; }
+  .photo { position: absolute; right: 0; top: 0; bottom: 0; width: 46%; object-fit: cover; z-index: 0; filter: saturate(.7); }
+  .photo-scrim { position: absolute; right: 0; top: 0; bottom: 0; width: 46%; z-index: 0; background: linear-gradient(90deg, var(--ground) 0%, rgba(20,23,27,.15) 30%, rgba(20,23,27,0) 100%); }
+  .photo-cap { position: absolute; right: 88px; bottom: 74px; z-index: 1; font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); background: rgba(20,23,27,.75); padding: 6px 10px; }
+
+  .eyebrow { font-family: var(--mono); font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin: 0 0 18px; }
+  h1, h2 { font-family: var(--display); font-weight: 700; line-height: 0.95; letter-spacing: -0.005em; margin: 0; text-wrap: balance; }
   h1 { font-size: 132px; }
   h2 { font-size: 66px; max-width: 18ch; }
   h2.tight { font-size: 60px; }
-  .lede {
-    font-size: 27px; line-height: 1.4; color: var(--muted);
-    max-width: 30em; margin: 24px 0 0;
-    text-wrap: pretty;
-  }
+  .lede { font-size: 27px; line-height: 1.4; color: var(--muted); max-width: 30em; margin: 24px 0 0; text-wrap: pretty; }
   .lede strong { color: var(--text); font-weight: 500; }
   p { margin: 0; }
-  .big {
-    font-family: var(--display); font-weight: 600;
-    font-size: 44px; line-height: 1.12; max-width: 20ch;
-  }
+  .big { font-family: var(--display); font-weight: 600; font-size: 44px; line-height: 1.12; max-width: 20ch; }
   .accent { color: var(--accent); }
   .stop { color: var(--stop); }
 
-  /* ---------- chrome ---------- */
-  .foot {
-    position: absolute; left: 88px; right: 88px; bottom: 28px;
-    display: flex; justify-content: space-between; align-items: baseline;
-    font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em;
-    color: var(--muted); text-transform: uppercase;
-  }
+  .foot { position: absolute; left: 88px; right: 88px; bottom: 28px; display: flex; justify-content: space-between; align-items: baseline; font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; z-index: 2; }
   .foot .n { color: var(--text); }
-  .tape {
-    position: absolute; left: 0; right: 0; top: 0; height: 10px;
-    background: repeating-linear-gradient(-45deg, var(--accent) 0 28px, var(--accent-ink) 28px 56px);
-  }
+  .tape { position: absolute; left: 0; right: 0; top: 0; height: 10px; z-index: 2; background: repeating-linear-gradient(-45deg, var(--accent) 0 28px, var(--accent-ink) 28px 56px); }
   .slide.title .tape { height: 14px; }
 
-  /* ---------- layouts ---------- */
   .grow { flex: 1; }
   .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; margin-top: 40px; }
   .cols-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 44px; }
   .list { list-style: none; margin: 36px 0 0; padding: 0; display: grid; gap: 22px; }
-  .list li {
-    display: grid; grid-template-columns: 34px 1fr; gap: 18px; align-items: start;
-    font-size: 27px; line-height: 1.3;
-  }
+  .list li { display: grid; grid-template-columns: 34px 1fr; gap: 18px; align-items: start; font-size: 27px; line-height: 1.3; }
   .list li .k { font-family: var(--mono); color: var(--accent); font-size: 16px; padding-top: 9px; letter-spacing: 0.08em; }
   .list li .k.x { color: var(--stop); }
   .list li .sub { display: block; color: var(--muted); font-size: 20px; line-height: 1.3; margin-top: 3px; }
 
-  .panel {
-    background: var(--surface); border: 1px solid var(--line);
-    padding: 26px 30px;
-  }
-  .panel h3 {
-    font-family: var(--mono); font-weight: 500; font-size: 14px; letter-spacing: 0.12em;
-    text-transform: uppercase; color: var(--muted); margin: 0 0 14px;
-  }
+  .panel { background: var(--surface); border: 1px solid var(--line); padding: 26px 30px; }
+  .panel h3 { font-family: var(--mono); font-weight: 500; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 0 0 14px; }
   .panel p, .panel li { font-size: 22px; line-height: 1.4; }
 
-  pre.doc {
-    font-family: var(--mono); font-size: 17px; line-height: 1.5;
-    background: #0f1215; border: 1px solid var(--line); border-left: 4px solid var(--accent);
-    padding: 22px 26px; margin: 0; overflow: hidden; white-space: pre-wrap;
-    color: #d5d9dc;
-  }
-  pre.doc .c { color: var(--muted); }
-  pre.doc .y { color: var(--accent); font-weight: 500; }
-  pre.doc .r { color: var(--stop); font-weight: 500; }
-  pre.doc .g { color: var(--ok); }
-  pre.doc .h { color: var(--text); font-weight: 500; }
+  pre.doc { font-family: var(--mono); font-size: 17px; line-height: 1.5; background: #0f1215; border: 1px solid var(--line); border-left: 4px solid var(--accent); padding: 22px 26px; margin: 0; overflow: hidden; white-space: pre-wrap; color: #d5d9dc; }
+  pre.doc .c { color: var(--muted); } pre.doc .y { color: var(--accent); font-weight: 500; } pre.doc .g { color: var(--ok); } pre.doc .h { color: var(--text); font-weight: 500; }
 
-  .tag {
-    display: inline-block; font-family: var(--mono); font-size: 15px; font-weight: 500;
-    padding: 4px 10px; border-radius: 2px; letter-spacing: 0.04em; vertical-align: middle;
-  }
-  .tag.obs { background: #2a3f33; color: #9fd8b0; }
-  .tag.sys { background: #253544; color: #9cc4e6; }
-  .tag.est { background: #3a3327; color: #e0c48a; }
-  .tag.gemba { background: var(--accent); color: var(--accent-ink); }
+  .tag { display: inline-block; font-family: var(--mono); font-size: 15px; font-weight: 500; padding: 4px 10px; border-radius: 2px; letter-spacing: 0.04em; vertical-align: middle; }
+  .tag.obs { background: #2a3f33; color: #9fd8b0; } .tag.sys { background: #253544; color: #9cc4e6; } .tag.est { background: #3a3327; color: #e0c48a; } .tag.gemba { background: var(--accent); color: var(--accent-ink); }
 
-  .kv { display: grid; grid-template-columns: auto 1fr; gap: 12px 28px; font-size: 22px; margin-top: 8px; }
-  .kv dt { font-family: var(--mono); color: var(--muted); font-size: 16px; padding-top: 5px; letter-spacing: 0.06em; }
-  .kv dd { margin: 0; line-height: 1.35; }
+  /* JBS table */
+  table.jbs { border-collapse: collapse; width: 100%; font-size: 18px; margin-top: 26px; }
+  table.jbs caption { text-align: left; font-family: var(--mono); font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding: 0 0 10px; }
+  table.jbs caption b { color: var(--accent); font-weight: 500; }
+  table.jbs th { font-family: var(--display); font-weight: 700; font-size: 24px; text-align: left; padding: 8px 14px 10px; border-bottom: 3px solid var(--accent); color: var(--text); }
+  table.jbs th small { display: block; font-family: var(--mono); font-weight: 400; font-size: 12px; letter-spacing: .1em; color: var(--muted); margin-top: 2px; }
+  table.jbs td { padding: 9px 14px; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.35; }
+  table.jbs td:first-child { color: var(--text); font-weight: 500; }
+  table.jbs td:nth-child(2) { color: #d5d9dc; }
+  table.jbs td:nth-child(3) { color: var(--muted); }
+  table.jbs tr.hl td { background: rgba(242,194,0,.08); }
 
   .oee-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 8px; }
   .oee-row .cell { border-top: 3px solid var(--line); padding-top: 12px; }
@@ -150,7 +83,6 @@
   .oee-row .lbl { font-family: var(--mono); font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
   .oee-row .val { font-family: var(--display); font-size: 64px; font-weight: 700; line-height: 1; margin-top: 6px; font-variant-numeric: tabular-nums; }
   .oee-row .frm { font-family: var(--mono); font-size: 13px; color: var(--muted); margin-top: 6px; }
-
   table.loss { border-collapse: collapse; width: 100%; font-size: 19px; margin-top: 6px; font-variant-numeric: tabular-nums; }
   table.loss th { font-family: var(--mono); font-weight: 500; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-align: left; padding: 6px 8px 10px; border-bottom: 1px solid var(--line); }
   table.loss td { padding: 8px 8px; border-bottom: 1px solid var(--line); }
@@ -158,17 +90,9 @@
   table.loss .bar { height: 10px; background: var(--accent); }
   table.loss tr.unmapped td { color: var(--accent); }
 
-  .pdca { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 40px; border: 1px solid var(--line); }
-  .pdca > div { padding: 26px 26px 30px; border-right: 1px solid var(--line); }
-  .pdca > div:last-child { border-right: 0; }
-  .pdca .step { font-family: var(--display); font-size: 54px; font-weight: 700; color: var(--accent); line-height: 1; }
-  .pdca p { font-size: 21px; line-height: 1.35; margin-top: 14px; }
-
-  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 44px; }
-  .steps .s { border-top: 3px solid var(--accent); padding-top: 16px; }
-  .steps .s h4 { font-family: var(--display); font-size: 34px; font-weight: 600; margin: 0 0 8px; line-height: 1; }
-  .steps .s p { font-size: 20px; line-height: 1.35; color: var(--muted); }
-  .steps .s p strong { color: var(--text); font-weight: 500; }
+  .stat { display: grid; grid-template-columns: repeat(3, auto); gap: 48px; margin-top: 40px; justify-content: start; }
+  .stat .v { font-family: var(--display); font-size: 96px; font-weight: 700; line-height: 1; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .stat .l { font-family: var(--mono); font-size: 14px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-top: 8px; }
 
   .qr-row { display: grid; grid-template-columns: 1fr 260px; gap: 64px; align-items: center; margin-top: 36px; }
   #qr { width: 260px; height: 260px; background: #fff; padding: 14px; display: grid; place-items: center; }
@@ -176,29 +100,22 @@
   .url { font-family: var(--mono); font-size: 34px; color: var(--accent); margin-top: 18px; }
   .install { font-family: var(--mono); font-size: 18px; color: var(--muted); margin-top: 22px; line-height: 1.6; }
 
-  .split-hero { display: grid; grid-template-columns: 1.05fr 1fr; gap: 64px; align-items: center; height: 100%; }
+  /* fragments */
+  .frag { visibility: hidden; }
+  .frag.on { visibility: visible; }
+  @media (prefers-reduced-motion: no-preference) { .frag { opacity: 0; transition: opacity .25s ease; } .frag.on { opacity: 1; } }
 
-  /* ---------- notes drawer & help ---------- */
-  #notes {
-    position: fixed; left: 0; right: 0; bottom: 0;
-    max-height: 38vh; overflow: auto;
-    background: #0d0f12; color: #d7dbdf; border-top: 2px solid var(--accent);
-    padding: 18px 28px calc(18px + env(safe-area-inset-bottom, 0px));
-    font-size: 17px; line-height: 1.5;
-    transform: translateY(100%); transition: transform .2s ease;
-  }
+  /* notes / help / timer */
+  #notes { position: fixed; left: 0; right: 0; bottom: 0; max-height: 38vh; overflow: auto; background: #0d0f12; color: #d7dbdf; border-top: 2px solid var(--accent);
+    padding: 18px 28px calc(18px + env(safe-area-inset-bottom, 0px)); font-size: 17px; line-height: 1.5; transform: translateY(100%); transition: transform .2s ease; z-index: 10; }
   #notes.open { transform: translateY(0); }
   #notes .t { font-family: var(--mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
   #notes p { margin: 0 0 10px; max-width: 80ch; }
   #notes .time { color: var(--muted); font-family: var(--mono); font-size: 13px; }
-  #help {
-    position: fixed; top: calc(12px + env(safe-area-inset-top, 0px)); right: 14px;
-    font-family: var(--mono); font-size: 12px; color: var(--muted);
-    background: rgba(13,15,18,.85); border: 1px solid var(--line); padding: 8px 12px;
-    letter-spacing: 0.06em;
-  }
-  #help kbd { color: var(--text); }
-  #help.hide { display: none; }
+  #help { position: fixed; top: calc(12px + env(safe-area-inset-top, 0px)); right: 14px; font-family: var(--mono); font-size: 12px; color: var(--muted); background: rgba(13,15,18,.85); border: 1px solid var(--line); padding: 8px 12px; letter-spacing: 0.06em; z-index: 10; }
+  #help kbd { color: var(--text); } #help.hide { display: none; }
+  #timer { position: fixed; top: calc(12px + env(safe-area-inset-top, 0px)); left: 14px; font-family: var(--mono); font-size: 22px; font-variant-numeric: tabular-nums; color: var(--accent); background: rgba(13,15,18,.85); border: 1px solid var(--line); padding: 6px 12px; display: none; z-index: 10; }
+  #timer.show { display: block; } #timer.over { color: var(--stop); border-color: var(--stop); }
   button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
   @media (prefers-reduced-motion: reduce) { #notes { transition: none; } }
 </style>
@@ -206,41 +123,65 @@
 <div id="stage-wrap">
 <div id="stage">
 
-<!-- 1 TITLE -->
+<!-- 01 TITLE -->
 <section class="slide title">
+  <img class="bg" src="img/floor-dawn.jpg" alt="" onerror="this.remove()"><div class="bg-scrim"></div>
   <div class="tape"></div>
   <div class="grow"></div>
   <p class="eyebrow">Northeast Lean Conference · 2026 · People &amp; AI</p>
   <h1>AI at the<br>Gemba</h1>
   <p class="lede"><strong>The assistant wasn't there. You were.</strong><br>What an AI is actually for when the work happens on the floor.</p>
   <div class="grow"></div>
-  <div class="foot"><span>Paul Ducey · paulducey.com/skills</span><span class="n">01</span></div>
+  <div class="foot"><span>Paul Ducey · paulducey.com</span><span class="n">01</span></div>
   <aside class="notes">
-    <p><span class="time">0:00 · 30 sec</span></p>
-    <p>Don't open with AI. Open with the room. "Show of hands — who in here has been told, by a vendor or a boss, that AI is going to transform continuous improvement?" Pause. "Keep your hand up if you've seen it happen at a workstation." Hands go down. That's the talk.</p>
-    <p>Then: "I'm not here to sell you a transformation. I'm here to show you a clipboard."</p>
+    <p><span class="time">0:00 → 0:45</span></p>
+    <p>Don't open with AI. Open with the room. "Show of hands — who's been told AI is going to transform continuous improvement?" Pause. "Keep your hand up if you've seen it happen at a workstation." Hands drop. "Right. That's the talk."</p>
+    <p>Then who you are in one breath: process excellence at a cannabis manufacturer; before that hardware; before that a kitchen. "I'm not here to sell you a transformation. I'm here to show you a clipboard."</p>
   </aside>
 </section>
 
-<!-- 2 GENCHI GENBUTSU -->
+<!-- 02 GENCHI GENBUTSU -->
 <section class="slide">
+  <img class="bg" src="img/floor-eye-level.jpg" alt="" onerror="this.remove()"><div class="bg-scrim"></div>
   <div class="tape"></div>
   <div class="grow"></div>
-  <p class="eyebrow">Every one of you was taught this</p>
+  <p class="eyebrow">Every one of you was taught this first</p>
   <h1 style="font-size:150px">現地現物</h1>
   <p class="lede" style="font-size:34px"><strong>Genchi genbutsu.</strong> Go to the actual place. Look at the actual thing.</p>
   <div class="grow"></div>
-  <p class="big">A language model has never seen anything.</p>
+  <p class="big frag">A language model has never seen anything.</p>
   <div class="foot"><span>AI at the Gemba</span><span class="n">02</span></div>
   <aside class="notes">
-    <p><span class="time">0:30 · ~1.5 min</span></p>
-    <p>Let this sit. The first principle of Lean and the first fact about AI are in tension, and everyone here feels that tension already — it's why they're skeptical. Name it before they do.</p>
-    <p>"An AI model has read every book about the gemba. It has never stood on one. It doesn't know your changeover, your operator on second shift, the pallet that's always in the aisle. So if the pitch is 'AI will go see for you' — that pitch is wrong, and you already knew it."</p>
-    <p>"But that leaves a real question: if it can't go see, what is it for?"</p>
+    <p><span class="time">0:45 → 2:15 · one click reveals the bottom line</span></p>
+    <p>Say the principle in your own words first. Then click, and read the line: "a language model has never seen anything." Then STOP. Three full seconds.</p>
+    <p>"It has read every book about the gemba. It has never stood on one. It doesn't know your changeover, your second-shift operator, the pallet that's always in the aisle. If the pitch is 'AI will go see for you' — that pitch is wrong, and you knew it. So: if it can't go see, what is it for?"</p>
   </aside>
 </section>
 
-<!-- 3 THE MUDA OF THE CI FUNCTION -->
+<!-- 03 WHERE THIS STARTED FOR ME -->
+<section class="slide">
+  <img class="photo" src="img/packaging-line.jpg" alt="" onerror="this.remove();document.getElementById('pcap').remove()"><div class="photo-scrim"></div>
+  <div class="tape"></div>
+  <p class="eyebrow">Where this started for me · Solar Cannabis Co · packaging &amp; labeling</p>
+  <h2 class="tight">Cost center →<br>profit center.</h2>
+  <p class="lede" style="max-width:22em">Two years ago the department showed up on the P&amp;L as pure cost. Today it runs roughly three-quarters of its capacity co-packing for other brands.</p>
+  <div class="stat">
+    <div><div class="v">~75%</div><div class="l">of capacity, co-packing</div></div>
+    <div><div class="v">1/3</div><div class="l">of the project was floor time</div></div>
+    <div><div class="v">2/3</div><div class="l">was a keyboard</div></div>
+  </div>
+  <p class="lede frag" style="font-size:24px; margin-top:34px; max-width:26em"><strong>It came from the floor, not a memo.</strong> Where product actually sat. Where the bottleneck actually lived — not where the office assumed.</p>
+  <span class="photo-cap" id="pcap">Solar · packaging line</span>
+  <div class="foot"><span>AI at the Gemba</span><span class="n">03</span></div>
+  <aside class="notes">
+    <p><span class="time">2:15 → 3:45 · click for the last line</span></p>
+    <p>Your story, in your words — this is what earns you the right to talk about a tool. Cost on the P&amp;L, capacity you owned, no revenue. Now ~75% co-packing. It came from standing on that line before touching anything.</p>
+    <p>Then the turn: "Here's what I noticed afterward. Floor time was maybe a third of the project. The other two-thirds was me at a keyboard producing documents ABOUT the floor."</p>
+    <p>If you replace this with a real photo of the line, say what we're looking at. If a number here is one Solar wouldn't want public, soften it out loud — "roughly three-quarters" is already softer than the slide.</p>
+  </aside>
+</section>
+
+<!-- 04 THE QUESTION -->
 <section class="slide">
   <div class="tape"></div>
   <p class="eyebrow">A question for the room</p>
@@ -248,103 +189,89 @@
   <div class="cols">
     <div>
       <ul class="list">
-        <li><span class="k">A3</span><span>Drafting, reformatting, re-drafting for the steering committee</span></li>
-        <li><span class="k">OEE</span><span>Wrestling a downtime export into a spreadsheet</span></li>
-        <li><span class="k">SW</span><span>Typing up a standard work sheet from your notes</span></li>
-        <li><span class="k">RCA</span><span>Turning a 5 Whys whiteboard into a report someone will read</span></li>
+        <li><span class="k">A3</span><span>Drafted, reformatted, re-drafted for the steering committee</span></li>
+        <li><span class="k">OEE</span><span>A downtime export wrestled into a spreadsheet</span></li>
+        <li><span class="k">SW</span><span>A standard work sheet typed up from your notes</span></li>
+        <li><span class="k">RCA</span><span>A 5 Whys whiteboard turned into a report someone will read</span></li>
       </ul>
     </div>
-    <div class="panel" style="margin-top:36px">
+    <div class="panel frag" style="margin-top:36px">
       <h3>Where those hours come from</h3>
-      <p>Every one of them is an hour <strong>not at the gemba.</strong> The document is necessary. The keyboard time is not value-added — it's the transportation and motion waste of the CI function itself.</p>
+      <p>Every one is an hour <strong>not at the gemba.</strong> The document is necessary. The thinking is value-added. The keyboard time is the motion waste of the CI function itself.</p>
     </div>
   </div>
-  <div class="foot"><span>AI at the Gemba</span><span class="n">03</span></div>
+  <div class="foot"><span>AI at the Gemba</span><span class="n">04</span></div>
   <aside class="notes">
-    <p><span class="time">2:00 · ~2 min</span></p>
-    <p>Actually ask, but take only two answers — "ten hours," "half my week." Write nothing down; just repeat them back. Do NOT put a made-up statistic on the slide; this room will ask for the source.</p>
-    <p>Then apply their own lens to their own job: "We would never accept that ratio on a production line. The A3 has to exist — but the hour spent formatting it in PowerPoint is motion. That's the waste I want to attack. Not the thinking. The typing."</p>
+    <p><span class="time">3:45 → 4:45 · click for the panel</span></p>
+    <p>Actually ask. Take two answers — "ten hours," "half my week." Repeat them back. No statistic on the slide; this room asks for sources.</p>
+    <p>Click. "We'd never accept that ratio on a production line. The A3 has to exist. The hour making it look right in PowerPoint is motion. That's the waste I want to attack. Not the thinking. The typing."</p>
   </aside>
 </section>
 
-<!-- 4 WHAT IT IS NOT -->
+<!-- 05 WHAT IT IS NOT -->
 <section class="slide">
   <div class="tape"></div>
   <p class="eyebrow">Clearing the ground</p>
   <h2>AI at the gemba is <span class="stop">not</span></h2>
   <ul class="list" style="margin-top:44px; gap:28px">
-    <li><span class="k x">✕</span><span>A robot walking the floor<span class="sub">It has no eyes. It has what you hand it.</span></span></li>
-    <li><span class="k x">✕</span><span>Another dashboard<span class="sub">You have enough numbers nobody acts on.</span></span></li>
-    <li><span class="k x">✕</span><span>A replacement for the sensei<span class="sub">Coaching is a human relationship. It stays one.</span></span></li>
-    <li><span class="k x">✕</span><span>"Solve my problem"<span class="sub">If it solves your problem for you, it learned nothing and neither did your team.</span></span></li>
+    <li class="frag"><span class="k x">✕</span><span>A robot walking the floor<span class="sub">It has no eyes. It has what you hand it.</span></span></li>
+    <li class="frag"><span class="k x">✕</span><span>Another dashboard<span class="sub">You have enough numbers nobody acts on.</span></span></li>
+    <li class="frag"><span class="k x">✕</span><span>A replacement for the sensei<span class="sub">Coaching is a human relationship. It stays one.</span></span></li>
+    <li class="frag"><span class="k x">✕</span><span>"Solve my problem"<span class="sub">If it solves your problem for you, it learned nothing — and neither did your team.</span></span></li>
   </ul>
-  <div class="foot"><span>AI at the Gemba</span><span class="n">04</span></div>
+  <div class="foot"><span>AI at the Gemba</span><span class="n">05</span></div>
   <aside class="notes">
-    <p><span class="time">4:00 · ~1 min</span></p>
-    <p>Fast. These are the four things the skeptics are bracing for; take them off the table so they can relax and listen. The fourth one is the one Lean people care most about — "solve my problem" is the opposite of developing people. Say that plainly.</p>
+    <p><span class="time">4:45 → 5:45 · four clicks, one breath each</span></p>
+    <p>Fast. These are the four things the skeptics are bracing for. The fourth is the one this room cares about most: a tool that hands your people answers is the opposite of developing your people. Say that plainly.</p>
   </aside>
 </section>
 
-<!-- 5 THESIS -->
+<!-- 06 THESIS -->
 <section class="slide">
+  <img class="bg" src="img/clipboard.jpg" alt="" onerror="this.remove()"><div class="bg-scrim"></div>
   <div class="tape"></div>
   <div class="grow"></div>
   <p class="eyebrow">What it is</p>
   <h1 style="font-size:118px">The assistant<br>holds the clipboard.</h1>
-  <p class="lede" style="font-size:30px; max-width:34em">It does the document work — so the practitioner can be at the gemba instead of at a keyboard. It works with what you give it, like a new Black Belt on day one: <strong>the data file, the old procedure, what you personally saw.</strong></p>
+  <p class="lede" style="font-size:30px; max-width:34em">It does the document work so the practitioner can be at the gemba. It works with what you hand it — like a new Black Belt on day one: <strong>the data file, the old procedure, what you personally saw.</strong></p>
   <div class="grow"></div>
-  <div class="foot"><span>AI at the Gemba</span><span class="n">05</span></div>
+  <div class="foot"><span>AI at the Gemba</span><span class="n">06</span></div>
   <aside class="notes">
-    <p><span class="time">5:00 · ~1.5 min</span></p>
-    <p>This is the thesis. Say it twice. "The assistant holds the clipboard. You go see."</p>
-    <p>The "new Black Belt on day one" framing does a lot of work for this audience — everyone here has onboarded one. You give them the data, the old SOP, and what you saw. You do not expect them to know the floor yet. You check their numbers. That is exactly the right relationship with this tool.</p>
+    <p><span class="time">5:45 → 7:15</span></p>
+    <p>The thesis. Say it twice: "The assistant holds the clipboard. You go see."</p>
+    <p>The new-Black-Belt framing does the work here — everyone has onboarded one. You give them the data, the old SOP, what you saw. You don't expect them to know the floor. You check their numbers. You'd never send their first draft to the steering committee untouched. Exactly the right relationship with this tool.</p>
   </aside>
 </section>
 
-<!-- 6 A SKILL IS STANDARD WORK -->
+<!-- 07 A SKILL IS STANDARD WORK -->
 <section class="slide">
   <div class="tape"></div>
   <p class="eyebrow">The mechanism</p>
-  <h2>A skill is standard work<br>for the assistant.</h2>
-  <div class="cols" style="margin-top:32px">
-    <pre class="doc"><span class="c"># oee-from-csv/SKILL.md</span>
-
-<span class="h">## When to use / when not to</span>
-<span class="c">Use for a downtime export from an MES or
-historian. Don't use for value-stream lead
-time (→ vsm-calc) or to investigate why
-(→ root-cause).</span>
-
-<span class="h">## How this skill works</span>
-<span class="c">1. Ask for the export, with the data-safety line
-2. Run the calculator — never recompute by hand
-3. If columns are missing, say which. Never guess.</span>
-
-<span class="h">## Quality bar</span>
-<span class="c">Every formula shown with numbers substituted.
-Never a bare OEE number without the losses.</span>
-
-<span class="h">## Closing block</span></pre>
-    <div>
-      <p class="big" style="font-size:36px">You already know how to write one of these.</p>
-      <dl class="kv" style="margin-top:28px">
-        <dt>TWI JBS</dt><dd>Important steps · key points · reasons</dd>
-        <dt>SKILL.md</dt><dd>How it works · quality bar · when not to use</dd>
-      </dl>
-      <p class="lede" style="font-size:22px; margin-top:28px">It's a job breakdown sheet. The trainee happens to be software. Everything you know about writing a good one applies: plain language, the reason behind each key point, what "done right" looks like.</p>
-    </div>
-  </div>
-  <div class="foot"><span>AI at the Gemba</span><span class="n">06</span></div>
+  <h2 class="tight" style="font-size:54px; max-width:24ch">A skill is standard work for the assistant.</h2>
+  <table class="jbs" style="margin-top:18px; font-size:17px">
+    <caption>TWI Job Breakdown Sheet · Job: <b>OEE from a downtime export</b> · Trainer: <b>Paul</b> · Trainee: <b>the assistant</b></caption>
+    <thead><tr><th>Important step<small>what</small></th><th>Key point<small>how — what makes or breaks it</small></th><th>Reason<small>why — the actual consequence</small></th></tr></thead>
+    <tbody>
+      <tr><td>Ask for the export</td><td>Say the data-safety line first</td><td>Names never enter the tool</td></tr>
+      <tr><td>Run the calculator</td><td>Never recompute by hand</td><td>Arithmetic mistakes are silent; a script's aren't</td></tr>
+      <tr class="hl"><td>If a column is missing, stop</td><td>List what was found and what's needed. Never substitute a value</td><td>A guessed number is a defect passed downstream</td></tr>
+      <tr><td>Present the result</td><td>Every formula with the real numbers substituted</td><td>The reader can check it on a napkin</td></tr>
+      <tr><td>Close</td><td>What still needs a human, and one next step</td><td>The practitioner gets the last word</td></tr>
+    </tbody>
+  </table>
+  <p class="big frag" style="font-size:30px; margin-top:18px; max-width:40ch">You already know how to write one of these. The trainee happens to be software.</p>
+  <div class="foot"><span>AI at the Gemba</span><span class="n">07</span></div>
   <aside class="notes">
-    <p><span class="time">6:30 · ~2.5 min</span></p>
-    <p>This is the slide that earns you the room's respect, because it's their expertise, not yours. A "skill" is a plain-text file that tells the assistant how to do one job, when not to do it, and what a good result looks like. That's a job breakdown sheet. That's standard work.</p>
-    <p>Point at the "when not to use" section. "Notice the skill routes away from itself. OEE isn't the tool for lead time. A good JBS does the same thing — it tells you when to stop and get the supervisor."</p>
-    <p>Anticipate the question: "Do I have to write these?" No — seventeen exist and they're free. But you can, and the ones you write for your plant will be better than mine.</p>
+    <p><span class="time">7:15 → 9:45 · click for the punchline</span></p>
+    <p>This is the intellectual centerpiece and it's their expertise. What's on screen is the actual OEE skill, rewritten as a JBS — every row is a real rule from the file. Walk one row: "if a column is missing, stop; list found vs. needed; never substitute — because a guessed number is a defect passed downstream." That's jidoka, on a JBS, for software.</p>
+    <p>Click. "A skill is a job breakdown sheet. The trainee happens to be software. Everything you know about writing a good one applies. Most of the AI industry is just now discovering that reliability comes from writing the tool standard work — they call it prompt engineering. You have a twenty-year head start."</p>
+    <p>"Do I have to write these?" — No, seventeen exist and they're free. But the ones you write for your plant will be better than mine.</p>
   </aside>
 </section>
 
-<!-- 7 JIDOKA FOR INFORMATION -->
+<!-- 08 JIDOKA FOR INFORMATION -->
 <section class="slide">
+  <img class="bg" src="img/andon.jpg" alt="" onerror="this.remove()"><div class="bg-scrim"></div>
   <div class="tape"></div>
   <p class="eyebrow">Design principle 1 of 5</p>
   <h2>Jidoka for information.</h2>
@@ -359,68 +286,67 @@ Die-cart travel:      <span class="y">[NEEDS GEMBA]</span>
 Who does ext. setup:  <span class="y">[NEEDS GEMBA]</span></pre>
     <div>
       <div style="display:grid; gap:12px; margin-top:2px">
-        <p><span class="tag obs">observed</span> &nbsp;<span style="font-size:19px; color:var(--muted)">you saw it, counted it, timed it</span></p>
-        <p><span class="tag sys">from system</span> &nbsp;<span style="font-size:19px; color:var(--muted)">MES, historian, maintenance log</span></p>
-        <p><span class="tag est">user estimate</span> &nbsp;<span style="font-size:19px; color:var(--muted)">a guess, labeled as one</span></p>
-        <p><span class="tag gemba">[NEEDS GEMBA]</span> &nbsp;<span style="font-size:19px; color:var(--muted)">the andon. Go look.</span></p>
+        <p class="frag"><span class="tag obs">observed</span> &nbsp;<span style="font-size:19px; color:var(--muted)">you saw it, counted it, timed it</span></p>
+        <p class="frag"><span class="tag sys">from system</span> &nbsp;<span style="font-size:19px; color:var(--muted)">MES, historian, maintenance log</span></p>
+        <p class="frag"><span class="tag est">user estimate</span> &nbsp;<span style="font-size:19px; color:var(--muted)">a guess, labeled as one</span></p>
+        <p class="frag"><span class="tag gemba">[NEEDS GEMBA]</span> &nbsp;<span style="font-size:19px; color:var(--muted)">the andon. Go look.</span></p>
       </div>
-      <p class="lede" style="font-size:20px; margin-top:20px">No tag? Don't trust it. Ask where it came from. That's the whole discipline.</p>
+      <p class="lede frag" style="font-size:20px; margin-top:20px">No tag? Don't trust it. Ask where it came from. That's the whole discipline.</p>
     </div>
   </div>
-  <div class="foot"><span>AI at the Gemba</span><span class="n">07</span></div>
+  <div class="foot"><span>AI at the Gemba</span><span class="n">08</span></div>
   <aside class="notes">
-    <p><span class="time">9:00 · ~2 min</span></p>
-    <p>Jidoka: build quality in, stop rather than pass a defect. The biggest real danger of these tools is a confident-sounding number with no provenance. So the rule is: every figure says where it came from, and if it came from nowhere, the assistant says so — in yellow.</p>
-    <p>Make the andon connection explicit. "[NEEDS GEMBA] is the cord. The assistant pulled it. Now you go."</p>
+    <p><span class="time">9:45 → 11:45 · five clicks: four tags, then the line</span></p>
+    <p>"The biggest danger isn't that these tools are stupid. It's that they're confident." Click through the tags. On the yellow one: "That tag is the andon. The assistant pulled the cord — stopped the line rather than pass a defect downstream. Now you go."</p>
+    <p>Last click: "No tag, don't trust it — the same discipline you already apply to a number on a whiteboard."</p>
   </aside>
 </section>
 
-<!-- 8 THREE MORE PRINCIPLES -->
+<!-- 09 THREE MORE -->
 <section class="slide">
   <div class="tape"></div>
   <p class="eyebrow">Design principles 2, 3, 4 of 5 · fast</p>
   <h2 class="tight">Three more, written into the standard work.</h2>
   <div class="cols-3" style="margin-top:30px">
-    <div class="panel">
+    <div class="panel frag">
       <h3>Poka-yoke for data</h3>
       <p>Missing column? It says which — <strong>never substitutes a value.</strong> Reason code it can't map? An explicit <strong>Unmapped</strong> row. OEE over 100%? Flagged, not printed — your "ideal" cycle time is probably an average.</p>
     </div>
-    <div class="panel">
+    <div class="panel frag">
       <h3>Observe, don't solve</h3>
       <p>The gemba-walk skill asks <strong>"what makes this step difficult?"</strong> — never "why aren't you following the standard?" It will not hand you a punch list. A walk that only produces corrections is an inspection.</p>
     </div>
-    <div class="panel">
+    <div class="panel frag">
       <h3>Sensei first, draft on demand</h3>
       <p>Coaching skills ask before they draft, left-to-right on the A3. Say <strong>"just draft it"</strong> and you get a draft in seconds — every unknown fact marked <span class="tag gemba" style="font-size:13px">[NEEDS GEMBA]</span>, never invented.</p>
     </div>
   </div>
-  <div class="foot"><span>AI at the Gemba</span><span class="n">08</span></div>
+  <div class="foot"><span>AI at the Gemba</span><span class="n">09</span></div>
   <aside class="notes">
-    <p><span class="time">11:00 · ~2 min</span></p>
-    <p>One breath per panel. Left: the traps everyone here has fallen into with a spreadsheet — the average-vs-best-demonstrated one gets knowing laughs. Middle: GBMP's culture is respect for people; this says the tool was built by someone who shares it. Right: two modes, neither invents facts.</p>
-    <p>Two lines to say out loud: "A spreadsheet will happily compute 104% OEE. This won't." And: "The most valuable thing it produces isn't the draft — it's the list of what it doesn't know. That list is where your gemba time goes next."</p>
+    <p><span class="time">11:45 → 13:45 · three clicks</span></p>
+    <p>One breath per panel. Left: "A spreadsheet will happily compute 104% OEE. This won't." Middle: GBMP's culture — this says the tool was built by someone who shares it. Right: "The most valuable thing it produces isn't the draft. It's the list of what it doesn't know. That list is where your gemba time goes next."</p>
   </aside>
 </section>
 
-<!-- 9 RESPECT FOR PEOPLE -->
+<!-- 10 RESPECT FOR PEOPLE -->
 <section class="slide">
   <div class="tape"></div>
   <p class="eyebrow">Design principle 5 of 5 · emphasis on the people</p>
   <h2>Respect for people, written in.</h2>
   <ul class="list" style="margin-top:34px; gap:22px; font-size:24px">
-    <li><span class="k">01</span><span>Ask it "how many people can we cut" and it answers the process question — then says once, plainly: <strong>these tools free capacity; what the organization does with freed capacity is a leadership decision.</strong><span class="sub">No lecture. No refusal. But it will not do that math for you as if it were neutral.</span></span></li>
-    <li><span class="k">02</span><span>Before anyone pastes a document: <strong>leave out names of employees or patients</strong> — roles and initials are fine.<span class="sub">Said every time, in every setting. Not buried in a policy.</span></span></li>
-    <li><span class="k">03</span><span>No AI jargon. Ever. <strong>"What you gave me." "I made that up — check it."</strong><span class="sub">It mirrors your vocabulary — PDSA if you say PDSA, unit and clinician if you're in a hospital. It never corrects you.</span></span></li>
+    <li class="frag"><span class="k">01</span><span>Ask it "how many people can we cut" and it answers the process question — then says once, plainly: <strong>these tools free capacity; what the organization does with freed capacity is a leadership decision.</strong><span class="sub">No lecture. No refusal. But it will not do that math for you as if it were neutral.</span></span></li>
+    <li class="frag"><span class="k">02</span><span>Before anyone pastes a document: <strong>leave out names of employees or patients</strong> — roles and initials are fine.<span class="sub">Said every time, in every setting. Not buried in a policy.</span></span></li>
+    <li class="frag"><span class="k">03</span><span>No AI jargon. Ever. <strong>"What you gave me." "I made that up — check it."</strong><span class="sub">It mirrors your vocabulary — PDSA if you say PDSA, unit and clinician in a hospital. It never corrects you.</span></span></li>
   </ul>
-  <div class="foot"><span>AI at the Gemba</span><span class="n">09</span></div>
+  <div class="foot"><span>AI at the Gemba</span><span class="n">10</span></div>
   <aside class="notes">
-    <p><span class="time">13:00 · ~1.5 min</span></p>
-    <p>This is the conference theme, and it's the slide to slow down on. The headcount line is the one people will quote afterward. Read it exactly as written.</p>
-    <p>"Lean has a forty-year scar from being used as a headcount tool. If we hand AI to the same people with the same incentives and no guardrails, we'll get the same scar, faster. So the guardrail is in the standard work. It's not a setting. It's a sentence the assistant is required to say."</p>
+    <p><span class="time">13:45 → 15:15 · three clicks · slow down</span></p>
+    <p>The conference theme. Read the headcount line exactly as written — it's the one they'll quote.</p>
+    <p>"Lean carries a forty-year scar from being used as a headcount tool. Hand AI to the same people with the same incentives and no guardrails, and we get the same scar, faster. So the guardrail is in the standard work. It's not a setting. It's a sentence the assistant is required to say."</p>
   </aside>
 </section>
 
-<!-- 10 DEMO -->
+<!-- 11 DEMO -->
 <section class="slide">
   <div class="tape"></div>
   <div class="grow"></div>
@@ -428,19 +354,19 @@ Who does ext. setup:  <span class="y">[NEEDS GEMBA]</span></pre>
   <h1 style="font-size:110px">A messy downtime export, start to finish.</h1>
   <p class="lede" style="font-size:26px">Watch for four things: the data-safety line · every formula with numbers substituted · the <strong>Unmapped</strong> row · and where the last sentence sends me.</p>
   <div class="grow"></div>
-  <div class="foot"><span>AI at the Gemba</span><span class="n">10</span></div>
+  <div class="foot"><span>AI at the Gemba</span><span class="n">11</span></div>
   <aside class="notes">
-    <p><span class="time">14:30 · ~4 min</span></p>
-    <p>Switch to the terminal. Have the CSV already in the folder and the session already open — don't make the room watch you launch anything. Say "just run the oee-from-csv skill on line1_downtime.csv" and narrate while it works. Four minutes, hard stop — this is the one place the clock can run away from you.</p>
-    <p>Tell the room the four things to watch for before you start, so they're reading the output with you rather than waiting for you.</p>
-    <p>If anything breaks: say "and that's why we tag numbers," advance to the next slide, and walk the example output instead. Do not debug on stage. Rehearse the fallback path once so it feels planned.</p>
+    <p><span class="time">15:15 → 19:15 · HARD STOP 19:30 (timer goes red)</span></p>
+    <p>Switch to the terminal — session already open, line1_downtime.csv in the folder. Type: <b>just run the oee-from-csv skill on line1_downtime.csv</b>. Narrate while it works; never wait in silence.</p>
+    <p>Call the beats as they appear: data-safety line first · columns found, title row skipped, blank column dropped · A = (480−72)/480 = 85% "check it on a napkin" · Unmapped 8 min: "elec", "waiting mat'l" — "it didn't guess what elec means; it told me the reason codes need a category at the source" · the planned/unplanned flag · closing block: "take this to the line supervisor." → "It sent me to a person on the floor. Not to another report."</p>
+    <p>If anything breaks: "And that is why we tag numbers." Next slide. Do not debug on stage.</p>
   </aside>
 </section>
 
-<!-- 11 DEMO FALLBACK / EXAMPLE OUTPUT -->
+<!-- 12 EXAMPLE OUTPUT -->
 <section class="slide">
   <div class="tape"></div>
-  <p class="eyebrow">Example output · Line 1 stamping · one shift · sample data</p>
+  <p class="eyebrow">Same run, on a slide · Line 1 stamping · one shift · sample data</p>
   <div class="oee-row">
     <div class="cell"><div class="lbl">Availability</div><div class="val">85.0%</div><div class="frm">(480 − 72) ÷ 480</div></div>
     <div class="cell"><div class="lbl">Performance</div><div class="val">88.2%</div><div class="frm">(0.5 × 720) ÷ 408</div></div>
@@ -473,20 +399,20 @@ Who does ext. setup:  <span class="y">[NEEDS GEMBA]</span></pre>
 <span class="c">Take this to the line supervisor and confirm
 whether changeover is logged as downtime.</span></pre>
   </div>
-  <div class="foot"><span>AI at the Gemba</span><span class="n">11</span></div>
+  <div class="foot"><span>AI at the Gemba</span><span class="n">12</span></div>
   <aside class="notes">
-    <p><span class="time">18:30 · ~1 min · fallback or recap</span></p>
-    <p>Sample figures, clearly labeled. If the demo worked, use this as the recap: point at the three things. Formulas with real numbers substituted — checkable. The Unmapped row — "elec" is a reason code that needs a better category at the source, and the tool said so instead of guessing. And the last line: it sent me to the supervisor. Not to another report. Every one of the seventeen skills ends with this same block — the assistant never gets the last word on what's true; a practitioner does, standing next to the machine.</p>
+    <p><span class="time">19:15 → 20:00 · recap, or the fallback</span></p>
+    <p>"Same run, on a slide, so you can photograph it." Point at three things: formulas with real numbers — checkable; the Unmapped row — a finding, not a rounding error; the last line — sent me to the supervisor. "Every one of the seventeen skills ends with this block. The assistant never gets the last word on what's true. A practitioner does, standing next to the machine."</p>
   </aside>
 </section>
 
-<!-- 12 HONESTLY + HOW TO START -->
+<!-- 13 WHERE IT GOES WRONG + START -->
 <section class="slide">
   <div class="tape"></div>
   <p class="eyebrow">Where it goes wrong · and how to start anyway</p>
   <h2 class="tight">Same tool. Opposite outcomes. The difference is a habit.</h2>
   <div class="cols" style="margin-top:30px; gap:44px">
-    <div class="panel" style="border-color:#4a2b25">
+    <div class="panel frag" style="border-color:#4a2b25">
       <h3 class="stop">It goes wrong when</h3>
       <ul style="margin:0; padding-left:22px; display:grid; gap:12px">
         <li><strong>The practitioner stops going.</strong> It amplifies the one who goes and sees; it hollows out the one who doesn't.</li>
@@ -494,7 +420,7 @@ whether changeover is logged as downtime.</span></pre>
         <li><strong>Confidential data in a chat box.</strong> Know your company's policy before the first paste.</li>
       </ul>
     </div>
-    <div class="panel" style="border-color:var(--accent)">
+    <div class="panel frag" style="border-color:var(--accent)">
       <h3 class="accent">Start like you'd start anything</h3>
       <ul style="margin:0; padding-left:22px; display:grid; gap:12px">
         <li><strong>One practitioner who already goes to the gemba.</strong> Never the one who doesn't — you'll just get more documents.</li>
@@ -503,15 +429,15 @@ whether changeover is logged as downtime.</span></pre>
       </ul>
     </div>
   </div>
-  <div class="foot"><span>AI at the Gemba</span><span class="n">12</span></div>
+  <div class="foot"><span>AI at the Gemba</span><span class="n">13</span></div>
   <aside class="notes">
-    <p><span class="time">19:30 · ~2 min</span></p>
-    <p>Credibility slide — a room of experts trusts the speaker who names the failure modes first. Left column first, slowly on the first bullet; it's the whole talk in reverse.</p>
-    <p>Right column is the anti-transformation plan. The check measure is the point: gemba hours, not AI usage. If someone's in a regulated environment: "ask IT which tools are approved and where the data goes — the skills are plain text and work with whatever your company sanctions."</p>
+    <p><span class="time">20:00 → 21:45 · two clicks</span></p>
+    <p>Left first, slowly on the first bullet — it's the whole talk in reverse. Right: the anti-transformation plan; the check measure is the point.</p>
+    <p>Then your own PDCA, honestly: "I'm a few weeks in. It's cut my document time. I can't yet show you gemba-hours across a team — that's the check I'm running now." In this room, an honest in-progress beats a claim. Replace with real data if you have it.</p>
   </aside>
 </section>
 
-<!-- 13 IT'S FREE -->
+<!-- 14 IT'S FREE -->
 <section class="slide">
   <div class="tape"></div>
   <p class="eyebrow">Take it with you · MIT licensed · free to copy, change, and share</p>
@@ -524,101 +450,96 @@ whether changeover is logged as downtime.</span></pre>
     </div>
     <div id="qr" aria-label="QR code linking to github.com/paulducey/lean-toolkit"></div>
   </div>
-  <div class="foot"><span>AI at the Gemba</span><span class="n">13</span></div>
+  <div class="foot"><span>AI at the Gemba</span><span class="n">14</span></div>
   <aside class="notes">
-    <p><span class="time">21:30 · 30 sec</span></p>
-    <p>Leave this up while you take questions. MIT license: copy it, change it, put your company's name on it. The plain-text point matters — no vendor, no subscription, no lock-in; it's a folder of files you can read.</p>
+    <p><span class="time">21:45 → 22:15</span></p>
+    <p>Leave this up during questions. Free, MIT, plain text — no vendor, no subscription, nothing you can't read yourself. Don't mention the paid orchestrations from the stage.</p>
   </aside>
 </section>
 
-<!-- 14 CLOSE -->
+<!-- 15 CLOSE -->
 <section class="slide">
+  <img class="bg" src="img/floor-dawn.jpg" alt="" onerror="this.remove()"><div class="bg-scrim"></div>
   <div class="tape"></div>
   <div class="grow"></div>
   <h1 style="font-size:140px">Go see.</h1>
   <p class="lede" style="font-size:38px; margin-top:28px"><strong>Let the assistant hold the clipboard.</strong></p>
   <div class="grow"></div>
-  <div class="foot"><span>Paul Ducey · paulducey.com/skills · github.com/paulducey/lean-toolkit</span><span class="n">14</span></div>
+  <div class="foot"><span>Paul Ducey · paulducey.com · github.com/paulducey/lean-toolkit</span><span class="n">15</span></div>
   <aside class="notes">
-    <p><span class="time">22:00 · 30 sec, then 7–8 min Q&amp;A</span></p>
-    <p>Bring it back to slide two. "The first thing you were taught is still the first thing. Nothing about this changes genchi genbutsu — it just clears the desk so you can practice it."</p>
-    <p>Then stop talking. Let the last line land. Thank them. Questions.</p>
-    <p>Likely questions: "Which AI?" — the skills are plain text and work with any assistant that reads them; I use Claude Code. "Hallucinations?" — slide 7; every number tagged, untagged numbers don't exist. "Healthcare?" — yes, the skills mirror unit/clinician vocabulary and carry a PHI warning. "Does it replace the CI department?" — it replaces the CI department's typing.</p>
+    <p><span class="time">22:15 → 22:45, then 7–8 min Q&amp;A</span></p>
+    <p>"The first thing you were taught is still the first thing. Nothing about this changes genchi genbutsu — it just clears the desk so you can go practice it." Then the line. Then stop talking. Thank them. Questions.</p>
+    <p>Answers to the eight likely questions are in the script.</p>
   </aside>
 </section>
 
 </div>
 </div>
 
-<div id="help"><kbd>→</kbd> next &nbsp; <kbd>←</kbd> back &nbsp; <kbd>N</kbd> notes &nbsp; <kbd>F</kbd> fullscreen &nbsp; <kbd>H</kbd> hide this</div>
+<div id="timer">00:00</div>
+<div id="help"><kbd>→</kbd> next &nbsp; <kbd>←</kbd> back &nbsp; <kbd>N</kbd> notes &nbsp; <kbd>T</kbd> timer &nbsp; <kbd>F</kbd> fullscreen &nbsp; <kbd>H</kbd> hide this</div>
 <div id="notes" aria-live="polite"><div class="t">Speaker notes</div><div id="notes-body"></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 (function () {
   var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
-  var stage = document.getElementById('stage');
-  var notes = document.getElementById('notes');
-  var notesBody = document.getElementById('notes-body');
-  var help = document.getElementById('help');
+  var stage = document.getElementById('stage'), notes = document.getElementById('notes'), notesBody = document.getElementById('notes-body');
+  var help = document.getElementById('help'), timerEl = document.getElementById('timer');
   var i = 0;
 
-  function fit() {
-    var w = window.innerWidth, h = window.innerHeight;
-    var s = Math.min(w / 1280, h / 720);
-    stage.style.transform = 'scale(' + s + ')';
-  }
-  function show(n) {
+  function fit() { var s = Math.min(window.innerWidth / 1280, window.innerHeight / 720); stage.style.transform = 'scale(' + s + ')'; }
+  function frags(n) { return Array.prototype.slice.call(slides[n].querySelectorAll('.frag')); }
+  function show(n, fromBack) {
     i = Math.max(0, Math.min(slides.length - 1, n));
     slides.forEach(function (s, k) { s.classList.toggle('active', k === i); });
-    var a = slides[i].querySelector('.notes');
-    notesBody.innerHTML = a ? a.innerHTML : '';
+    frags(i).forEach(function (f) { f.classList.toggle('on', !!fromBack); });
+    var a = slides[i].querySelector('.notes'); notesBody.innerHTML = a ? a.innerHTML : '';
     try { history.replaceState(null, '', '#' + (i + 1)); } catch (e) {}
   }
-  function fromHash() {
-    var n = parseInt((location.hash || '').replace('#', ''), 10);
-    show(isNaN(n) ? 0 : n - 1);
+  function next() {
+    var f = frags(i).filter(function (x) { return !x.classList.contains('on'); });
+    if (f.length) { f[0].classList.add('on'); return; }
+    if (i < slides.length - 1) show(i + 1);
   }
+  function prev() {
+    var f = frags(i).filter(function (x) { return x.classList.contains('on'); });
+    if (f.length) { f[f.length - 1].classList.remove('on'); return; }
+    if (i > 0) show(i - 1, true);
+  }
+  function fromHash() { var n = parseInt((location.hash || '').replace('#', ''), 10); show(isNaN(n) ? 0 : n - 1); }
+
+  var t0 = null, tick = null;
+  function fmt(s) { return (s < 600 ? '0' : '') + Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
+  function toggleTimer() {
+    if (t0) { clearInterval(tick); t0 = null; timerEl.classList.remove('show'); return; }
+    t0 = Date.now(); timerEl.classList.add('show'); timerEl.classList.remove('over'); timerEl.textContent = '00:00';
+    tick = setInterval(function () { var s = Math.floor((Date.now() - t0) / 1000); timerEl.textContent = fmt(s); timerEl.classList.toggle('over', s >= 19 * 60 + 30); }, 500);
+  }
+
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); show(i + 1); }
-    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); show(i - 1); }
-    else if (e.key === 'Home') { show(0); }
-    else if (e.key === 'End') { show(slides.length - 1); }
-    else if (e.key === 'n' || e.key === 'N') { notes.classList.toggle('open'); }
-    else if (e.key === 'h' || e.key === 'H') { help.classList.toggle('hide'); }
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); next(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(slides.length - 1, true);
+    else if (e.key === 'n' || e.key === 'N') notes.classList.toggle('open');
+    else if (e.key === 'h' || e.key === 'H') help.classList.toggle('hide');
+    else if (e.key === 't' || e.key === 'T') toggleTimer();
     else if (e.key === 'f' || e.key === 'F') {
-      var el = document.documentElement;
       if (document.fullscreenElement) { document.exitFullscreen && document.exitFullscreen(); }
-      else if (el.requestFullscreen) { el.requestFullscreen(); }
+      else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
     }
   });
-  stage.addEventListener('click', function (e) {
-    if (e.target.closest('a')) return;
-    var r = stage.getBoundingClientRect();
-    show(e.clientX - r.left < r.width * 0.25 ? i - 1 : i + 1);
-  });
+  stage.addEventListener('click', function (e) { if (e.target.closest('a')) return; var r = stage.getBoundingClientRect(); (e.clientX - r.left < r.width * 0.25) ? prev() : next(); });
   var tx = null;
   document.addEventListener('touchstart', function (e) { tx = e.touches[0].clientX; }, { passive: true });
-  document.addEventListener('touchend', function (e) {
-    if (tx === null) return;
-    var dx = e.changedTouches[0].clientX - tx; tx = null;
-    if (Math.abs(dx) > 40) show(dx < 0 ? i + 1 : i - 1);
-  }, { passive: true });
+  document.addEventListener('touchend', function (e) { if (tx === null) return; var dx = e.changedTouches[0].clientX - tx; tx = null; if (Math.abs(dx) > 40) (dx < 0 ? next() : prev()); }, { passive: true });
   window.addEventListener('resize', fit);
   window.addEventListener('hashchange', fromHash);
 
-  try {
-    new QRCode(document.getElementById('qr'), {
-      text: 'https://github.com/paulducey/lean-toolkit',
-      width: 232, height: 232, correctLevel: QRCode.CorrectLevel.M
-    });
-  } catch (e) {
-    var q = document.getElementById('qr');
-    q.style.background = 'transparent';
-    q.innerHTML = '';
-  }
+  try { new QRCode(document.getElementById('qr'), { text: 'https://github.com/paulducey/lean-toolkit', width: 232, height: 232, correctLevel: QRCode.CorrectLevel.M }); }
+  catch (e) { var q = document.getElementById('qr'); q.style.background = 'transparent'; q.innerHTML = ''; }
 
-  fit();
-  fromHash();
+  fit(); fromHash();
 })();
 </script>
