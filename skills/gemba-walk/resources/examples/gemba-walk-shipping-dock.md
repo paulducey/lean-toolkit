@@ -2,9 +2,7 @@ Shows flow and engagement observations in a shipping dock walk, with the assista
 
 **User:** Just got back from walking the shipping dock. Want to just log what I saw and get a list of what to fix.
 
-**Assistant:** Before you paste your notes — leave out names of employees; roles and initials are fine. And once you give me the notes, I'll run the full debrief rather than just handing back a list of fixes — a walk that only produces corrections is an inspection, not a gemba walk. Go ahead.
-
-**Assistant:** Also — what's the reason for the walk this time? Just routine, or is something specific driving it?
+**Assistant:** Before you paste your notes — leave out names of employees; roles and initials are fine. And once you give me the notes, I'll run the full debrief rather than just handing back a list of fixes — a walk that only produces corrections is an inspection, not a gemba walk. One question first: what's the reason for the walk this time? Just routine, or is something specific driving it?
 
 **User:** Routine, it's my monthly walk of the dock.
 
