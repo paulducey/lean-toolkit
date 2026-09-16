@@ -52,6 +52,8 @@ def convert(md, title=None):
                 if not re.match(r"^\s*\|?\s*:?-{2,}", lines[j]):
                     rows.append([c.strip() for c in lines[j].strip().strip("|").split("|")])
                 j += 1
+            width = max(len(r) for r in rows)
+            rows = [r + [""] * (width - len(r)) for r in rows]
             body.append(table(rows)); i = j; continue
         m = re.match(r"^(#{1,4})\s+(.*)", l)
         if m: body.append(para(m.group(2), f"Heading{len(m.group(1))}")); i += 1; continue

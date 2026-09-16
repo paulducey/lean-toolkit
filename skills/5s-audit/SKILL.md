@@ -12,7 +12,7 @@ A 5S audit is not a cleanliness inspection — it is an assessment of whether th
 
 Use it when assessing an existing workplace, launching a 5S program in a new area, preparing for a formal audit, or when performance problems have a visual-management or organization component.
 
-Don't use it to design a new layout from scratch (→ `vsm-calc` for flow design), to run a broader floor walk looking for waste (→ `gemba-walk`), or to document the resulting standard condition after improvements are made (→ `standard-work`).
+Don't use it to design a new layout from scratch (→ `vsm-calc` for flow design), to run a broader floor walk looking for waste (→ `gemba-walk`), or to document the resulting standard condition after improvements are made (→ `standard-work`). A takt-time, capacity or lead-time question is not a 5S question — say so in one line and hand off to `capacity-planner` or `vsm-calc`.
 
 ## The five pillars — definitions
 

@@ -43,8 +43,12 @@ def sniff_rows(text):
     header = [norm(h) for h in rows[0]]
     keep = [i for i, h in enumerate(header) if h]  # drop blank columns
     header = [header[i] for i in keep]
-    data = [[(r[i] if i < len(r) else "").strip() for i in keep] for r in rows[1:] if any(c.strip() for c in r)]
-    return header, data, start
+    data, dup = [], 0
+    for r in rows[1:]:
+        if not any(c.strip() for c in r): continue
+        if [norm(r[i]) if i < len(r) else "" for i in keep] == header: dup += 1; continue
+        data.append([(r[i] if i < len(r) else "").strip() for i in keep])
+    return header, data, start, dup
 
 def resolve(header):
     found, missing = {}, []
@@ -71,7 +75,7 @@ def main():
     ap.add_argument("csv"); ap.add_argument("--cycle-time-unit", choices=["min", "s"], default="min")
     a = ap.parse_args()
     text = open(a.csv, encoding="utf-8-sig", errors="replace").read()
-    header, data, skipped = sniff_rows(text)
+    header, data, skipped, dup_headers = sniff_rows(text)
     col, missing = resolve(header)
     print(f"# OEE report — {a.csv}\n")
     print(f"Columns found: {', '.join(header)}" + (f"  (skipped {skipped} title row(s))" if skipped else ""))
@@ -138,7 +142,9 @@ def main():
     OEE = A * P * (Q if Q is not None else 1)
     down = totals["planned"] - totals["run"]
 
+    unusable = [f for f in flags if "not usable" in f.lower()]
     print("\n## Availability × Performance × Quality\n")
+    if unusable: print("⚠ **One or more results below are NOT USABLE** — see Flags before reading the numbers.\n")
     print(f"- **Availability = run time ÷ planned time** = ({totals['planned']:.0f} − {down:.0f}) ÷ {totals['planned']:.0f} = {totals['run']:.0f} ÷ {totals['planned']:.0f} = **{pct(A)}**")
     print(f"- **Performance = (ideal cycle time × total count) ÷ run time** = {totals['ideal_x_count']:.0f} ÷ {totals['run']:.0f} = **{pct(P)}**")
     if Q is not None:
@@ -167,6 +173,8 @@ def main():
             print(f"| {label} | {planned:.0f} | {d:.0f} | {pct(a_)} | {pct(p_)} | {pct(q_) if q_ is not None else '—'} |")
 
     print("\n## Flags\n")
+    if dup_headers:
+        flags.append(f"The header row appears {dup_headers} more time(s) inside the data — those rows were ignored. Usually a sign the export was stitched together from several files; check that nothing else was lost in the join.")
     if "planned_downtime" not in col:
         flags.append("The export does not separate planned from unplanned downtime; all downtime was treated as unplanned. Check with whoever built the schedule.")
     if "downtime_reason" not in col:

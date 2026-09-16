@@ -138,6 +138,10 @@ A recommended action of "train operators" addresses none of these dimensions rel
 - "Train operators" is not accepted as a recommended action that changes any of S, O, or D without a structural complement.
 - The FMEA table includes owner (role) and target date for every recommended action.
 
+## Qualitative ratings
+
+If the user gives a rating as a word — "high", "likely", "hard to catch" — never silently turn it into a number. Show the scale anchor you think it matches ("high occurrence reads as 8 on the 1–10 scale: one failure per ~20 units — is that right?") and mark the score `[user estimate — confirm]` until they agree. A number the user did not choose is a guess wearing a decimal point.
+
 ## Toolkit contract
 
 This skill keeps the ten promises in `docs/TOOLKIT-CONTRACT.md`. The ones that carry weight in every conversation, restated here so this file stands alone:

@@ -25,7 +25,7 @@ If you don't want to use Projects: start any new chat, paste the skill file as y
 
 ## Path B — Claude Code (for the ones that run scripts)
 
-Two of the skills — `oee-from-csv` and `vsm-calc` — run a small Python script so the arithmetic is never done in the assistant's head. To use those the way they're designed, you need Claude Code, which runs on your computer.
+Two of the skills — `oee-from-csv` and `vsm-calc` — run a small Python script so the arithmetic is never done in the assistant's head. To use those the way they're designed, you need Claude Code, which runs on your computer. Four skills (`kaizen-charter`, `twi-jbs`, `oee-from-csv`, `vsm-calc`) can also export the finished deliverable to a Word file with a script; that part is optional — in a plain chat, just copy the Markdown into your document. If a skill mentions `export_docx.py` and you're in a chat, ignore it.
 
 1. Install Claude Code — follow the current instructions at https://code.claude.com/docs (it's a single install; you'll sign in with your Claude account).
 2. Make a folder for your Lean work, e.g. `lean-work`, and put your data files in it (your downtime export, your step table).
@@ -42,7 +42,7 @@ Try it first on the sample that ships with the toolkit: `skills/oee-from-csv/res
 
 ## Path C — Another assistant
 
-The files are plain text with no special syntax. Paste a `SKILL.md` into whatever "custom instructions" or "system prompt" box your assistant offers, then talk to it. The scripts need Python and Claude Code; the other fifteen skills need nothing.
+The files are plain text with no special syntax. Paste a `SKILL.md` into whatever "custom instructions" or "system prompt" box your assistant offers, then talk to it. The two calculators need Python and Claude Code; the Word export is optional everywhere; the other skills need nothing.
 
 ---
 

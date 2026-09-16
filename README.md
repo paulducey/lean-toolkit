@@ -40,7 +40,7 @@ Each skill's folder holds a `SKILL.md` and `resources/examples/` — full worked
 
 **No install — paste into a chat.** Copy a `SKILL.md` into a Claude Project's instructions (or any assistant that takes pasted instructions), then say what's in front of you.
 
-**Claude Code — for the two skills that run scripts.**
+**Claude Code — for the skills that run scripts.** Two skills do their arithmetic in a script (`oee-from-csv`, `vsm-calc`), and four can export a deliverable to Word (`kaizen-charter`, `twi-jbs`, `oee-from-csv`, `vsm-calc`). Exporting is optional — in a chat you simply copy the Markdown. The calculators are not optional; use Claude Code for those two.
 ```bash
 cp -r skills/*/ .claude/skills/
 ```
@@ -61,7 +61,7 @@ The ten-point contract is in [docs/TOOLKIT-CONTRACT.md](docs/TOOLKIT-CONTRACT.md
 
 ## Tested
 
-`tests/audit_skills.py` checks every skill against the contract and that every file it references exists. `tests/VALIDATION-PROMPT.md` and `tests/scenarios.md` let a fresh model session try to break each skill and write a cited report; the latest independent report is in `tests/REPORT.md`.
+`tests/audit_skills.py` checks every skill against the contract and that every file it references exists. `tests/VALIDATION-PROMPT.md` and `tests/scenarios.md` let a fresh model session try to break each skill and write a cited report; the two independent reports are in `tests/REPORT.md` (first pass, 5 blockers) and `tests/REPORT-2.md` (after fixes: 0 blockers).
 
 ```bash
 python3 tests/audit_skills.py
