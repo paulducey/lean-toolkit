@@ -1,0 +1,6 @@
+step,cycle_time_s,changeover_s,lot_size,uptime_pct,inventory_before,source
+Blank,45,1800,500,92,1200,"from MES"
+Form,60,2400,500,88,800,"observed, 10 cycles, 2026-09-12"
+Weld,75,,,95,350,"observed, 8 cycles, 2026-09-12"
+Inspect,,,,100,120,
+Pack,40,,,100,60,"user estimate"

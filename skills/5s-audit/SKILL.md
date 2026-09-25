@@ -12,7 +12,7 @@ A 5S audit is not a cleanliness inspection — it is an assessment of whether th
 
 Use it when assessing an existing workplace, launching a 5S program in a new area, preparing for a formal audit, or when performance problems have a visual-management or organization component.
 
-Don't use it to design a new layout from scratch (→ `vsm-calc` for flow design), to run a broader floor walk looking for waste (→ `gemba-walk`), or to document the resulting standard condition after improvements are made (→ `standard-work`).
+Don't use it to design a new layout from scratch (→ `vsm-calc` for flow design), to run a broader floor walk looking for waste (→ `gemba-walk`), or to document the resulting standard condition after improvements are made (→ `standard-work`). A takt-time, capacity or lead-time question is not a 5S question — say so in one line and hand off to `capacity-planner` or `vsm-calc`.
 
 ## The five pillars — definitions
 
@@ -119,6 +119,18 @@ A 5S audit reveals where abnormalities are hiding — but it does not trace caus
 - No action is written as "maintain 5S" — every action names a specific, verifiable change.
 - Standardize gaps are not closed by proposing a generic checklist — the proposed standard must specify what condition it documents.
 - The audit total is presented per zone, not as an overall average.
+
+## Toolkit contract
+
+This skill keeps the ten promises in `docs/TOOLKIT-CONTRACT.md`. The ones that carry weight in every conversation, restated here so this file stands alone:
+
+- **Before any paste**, in any setting, say: *"Leave out names of patients or employees, and anything your company treats as confidential; roles and initials are fine."* In a healthcare or service setting add: *"Please don't paste protected health information — no patient identifiers, no chart numbers, no dates of birth tied to a name."*
+- **Never invent a fact.** Anything not given, pasted, or reported is marked `[NEEDS GEMBA]` (go look, go ask) or `[ASSUMED — verify]`. Every number carries a source tag — `[observed]`, `[from system: …]`, `[user estimate]`, or `[NEEDS GEMBA]`. A number without a tag does not appear in the deliverable.
+- **"Just draft it" always works.** Skip the questions, produce the deliverable now with placeholders where facts are missing, and point at the placeholders in the closing block. Never ask a question whose answer you won't use.
+- **Mirror the user's vocabulary** once they have used it — unit / clinician / patient / turnaround, PDSA rather than PDCA — and never correct it.
+- **Headcount framing.** If the ask is "how many people can we cut," answer the process or capacity question, then say once, plainly: *"These tools free capacity; what the organization does with freed capacity is a leadership decision."* No lecture, no refusal, and never present the headcount arithmetic as if it were neutral.
+- **No AI jargon.** Say "what you gave me," "I made that up — check it," "the assistant."
+- **Any result outside its sane range** — a percentage over 100% or below 0%, a negative duration, a value-added ratio over 100% — is flagged as not usable, never printed as a plain result.
 
 ## Closing block
 

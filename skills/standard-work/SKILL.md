@@ -16,6 +16,16 @@ license: MIT
 
 ---
 
+## How this skill works
+
+**Open with one sentence the first time:** "Tell me the job, who does it best, and what you timed — and I'll build the combination sheet; say *just draft it* and I'll draft from what you have."
+
+1. **Read everything given** — observations, timings, the current sequence, demand and available time.
+2. **Ask up to three questions:** who performs this job best and was that the person observed; how many cycles were timed and by whom; available time and demand for takt.
+3. **Escape hatch:** on "just draft it" → draft the combination sheet now. Any step not timed is `[NEEDS GEMBA: time this step]`; takt without demand or available time is `[NEEDS GEMBA: demand / available time]`. Never fill a time from the tool's idea of how the job usually goes.
+4. **Every time carries a source** — `[observed, n cycles, date]`, `[from system]`, `[user estimate]` — and the modal time is used, not the average.
+5. **Say in one line** if what's really needed is a JBS (→ `twi-jbs`) or a procedure manual, and **close** with the shared closing block.
+
 ## The three elements of standard work
 
 Standard work is not a document type — it is the precise definition of three things. All three must be present. Missing any one of them produces a procedure, not standard work.
@@ -82,7 +92,7 @@ The combination sheet is a floor document. Print it, laminate it, post it at the
 ## Quality bar
 
 1. Takt time is calculated from actual available production time and actual demand — not from theoretical capacity.
-2. Cycle time is observed (modal of 5+ cycles) and documented with observation date and observer name.
+2. Cycle time is observed (modal of 5+ cycles) and documented with observation date and observer role — or marked `[NEEDS GEMBA: time this step]`, never estimated.
 3. Work sequence lists steps at the action level, not task level.
 4. Standard WIP is explicitly stated, even if it is 1.
 5. The combination sheet is posted at the workstation, not stored in a binder.
@@ -90,6 +100,18 @@ The combination sheet is a floor document. Print it, laminate it, post it at the
 7. Cycle time is ≤ takt time; if not, the gap is explicitly noted and an improvement action is open.
 
 ---
+
+## Toolkit contract
+
+This skill keeps the ten promises in `docs/TOOLKIT-CONTRACT.md`. The ones that carry weight in every conversation, restated here so this file stands alone:
+
+- **Before any paste**, in any setting, say: *"Leave out names of patients or employees, and anything your company treats as confidential; roles and initials are fine."* In a healthcare or service setting add: *"Please don't paste protected health information — no patient identifiers, no chart numbers, no dates of birth tied to a name."*
+- **Never invent a fact.** Anything not given, pasted, or reported is marked `[NEEDS GEMBA]` (go look, go ask) or `[ASSUMED — verify]`. Every number carries a source tag — `[observed]`, `[from system: …]`, `[user estimate]`, or `[NEEDS GEMBA]`. A number without a tag does not appear in the deliverable.
+- **"Just draft it" always works.** Skip the questions, produce the deliverable now with placeholders where facts are missing, and point at the placeholders in the closing block. Never ask a question whose answer you won't use.
+- **Mirror the user's vocabulary** once they have used it — unit / clinician / patient / turnaround, PDSA rather than PDCA — and never correct it.
+- **Headcount framing.** If the ask is "how many people can we cut," answer the process or capacity question, then say once, plainly: *"These tools free capacity; what the organization does with freed capacity is a leadership decision."* No lecture, no refusal, and never present the headcount arithmetic as if it were neutral.
+- **No AI jargon.** Say "what you gave me," "I made that up — check it," "the assistant."
+- **Any result outside its sane range** — a percentage over 100% or below 0%, a negative duration, a value-added ratio over 100% — is flagged as not usable, never printed as a plain result.
 
 ## Closing block
 
